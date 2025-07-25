@@ -1,4 +1,13 @@
 export default async function handler(req, res) {
+  // Habilitar CORS
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end(); // respuesta rápida para preflight
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Solo se permiten solicitudes POST' });
   }
@@ -14,7 +23,6 @@ export default async function handler(req, res) {
 
     const texto = await respuesta.text();
     console.log("✅ Reenviado a Google Sheets:", texto);
-
     res.status(200).send("✅ Datos reenviados al webhook");
   } catch (error) {
     console.error("❌ Error al reenviar a Google Sheets:", error);
